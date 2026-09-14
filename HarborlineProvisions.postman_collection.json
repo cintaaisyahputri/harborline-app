@@ -1,0 +1,778 @@
+{
+	"info": {
+		"name": "Harborline Provisions API",
+		"description": "Auth + full CRUD for fleet, warehouses, inventory, orders and compliance certificates on the Harborline Provisions maritime supply chain platform.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000/api"
+		},
+		{
+			"key": "token",
+			"value": ""
+		},
+		{
+			"key": "vessel_id",
+			"value": ""
+		},
+		{
+			"key": "warehouse_id",
+			"value": ""
+		},
+		{
+			"key": "inventory_id",
+			"value": ""
+		},
+		{
+			"key": "order_id",
+			"value": ""
+		},
+		{
+			"key": "certificate_id",
+			"value": ""
+		}
+	],
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": "{{base_url}}/register",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Restu Prasetyo\",\n  \"email\": \"restu@example.com\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\",\n  \"role\": \"buyer\"\n}"
+						}
+					}
+				},
+				{
+					"name": "Login (admin)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": "{{base_url}}/login",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin@harborline.test\",\n  \"password\": \"password\"\n}"
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"// Step 1 of 2: this only sends a 6-digit code to the user's email",
+									"// (MAIL_MAILER=log -> check storage/logs/laravel.log for the code).",
+									"// Copy that code into 'Verify Login Code' below to actually get a token."
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Verify Login Code",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": "{{base_url}}/login/verify",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin@harborline.test\",\n  \"code\": \"123456\"\n}"
+						},
+						"description": "Step 2 of login. Use the 6-digit code emailed (or logged to storage/logs/laravel.log when MAIL_MAILER=log) after calling /login."
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"const data = pm.response.json();",
+									"if (data.token) { pm.collectionVariables.set('token', data.token); }"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Me",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{base_url}}/me"
+					}
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{base_url}}/logout"
+					}
+				}
+			]
+		},
+		{
+			"name": "Fleet",
+			"item": [
+				{
+					"name": "List Vessels",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{base_url}}/fleet?status=at_sea"
+					}
+				},
+				{
+					"name": "Create Vessel",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{base_url}}/fleet",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Camar Selatan 07\",\n  \"registration_number\": \"HP-1A2B345\",\n  \"home_port\": \"Muara Baru\",\n  \"captain_name\": \"Agus Wibowo\",\n  \"capacity_tons\": 180,\n  \"status\": \"docked\"\n}"
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"const data = pm.response.json();",
+									"if (data.id) { pm.collectionVariables.set('vessel_id', data.id); }"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Show Vessel",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{base_url}}/fleet/{{vessel_id}}"
+					}
+				},
+				{
+					"name": "Update Vessel",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{base_url}}/fleet/{{vessel_id}}",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"maintenance\"\n}"
+						}
+					}
+				},
+				{
+					"name": "Update Vessel Position",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{base_url}}/fleet/{{vessel_id}}/position",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"current_lat\": -6.104,\n  \"current_lng\": 106.881,\n  \"status\": \"at_sea\"\n}"
+						}
+					}
+				},
+				{
+					"name": "Delete Vessel",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{base_url}}/fleet/{{vessel_id}}"
+					}
+				}
+			]
+		},
+		{
+			"name": "Warehouses",
+			"item": [
+				{
+					"name": "List Warehouses",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{base_url}}/warehouses"
+					}
+				},
+				{
+					"name": "Create Warehouse",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{base_url}}/warehouses",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Muara Baru Cold Storage\",\n  \"location\": \"Muara Baru, Jakarta\",\n  \"type\": \"cold_storage\",\n  \"capacity_tons\": 1200\n}"
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"const data = pm.response.json();",
+									"if (data.id) { pm.collectionVariables.set('warehouse_id', data.id); }"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Show Warehouse",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{base_url}}/warehouses/{{warehouse_id}}"
+					}
+				},
+				{
+					"name": "Update Warehouse",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{base_url}}/warehouses/{{warehouse_id}}",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"capacity_tons\": 1500\n}"
+						}
+					}
+				},
+				{
+					"name": "Delete Warehouse",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{base_url}}/warehouses/{{warehouse_id}}"
+					}
+				}
+			]
+		},
+		{
+			"name": "Inventory",
+			"item": [
+				{
+					"name": "List Inventory",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{base_url}}/inventory?low_stock=1"
+					}
+				},
+				{
+					"name": "Create Inventory Item",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{base_url}}/inventory",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"warehouse_id\": \"{{warehouse_id}}\",\n  \"name\": \"Frozen Skipjack Tuna\",\n  \"sku\": \"SKU-TUNA001\",\n  \"category\": \"frozen\",\n  \"species\": \"Skipjack Tuna\",\n  \"quantity_kg\": 850,\n  \"reorder_threshold_kg\": 100,\n  \"unit_price\": 6.5,\n  \"caught_at\": \"2026-08-20\",\n  \"expires_at\": \"2026-11-20\"\n}"
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"const data = pm.response.json();",
+									"if (data.id) { pm.collectionVariables.set('inventory_id', data.id); }"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Show Inventory Item",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{base_url}}/inventory/{{inventory_id}}"
+					}
+				},
+				{
+					"name": "Update Inventory Item",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{base_url}}/inventory/{{inventory_id}}",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"quantity_kg\": 700\n}"
+						}
+					}
+				},
+				{
+					"name": "Delete Inventory Item",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{base_url}}/inventory/{{inventory_id}}"
+					}
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "List Orders",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{base_url}}/orders?status=confirmed"
+					}
+				},
+				{
+					"name": "Create Order",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{base_url}}/orders",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"warehouse_id\": \"{{warehouse_id}}\",\n  \"notes\": \"Weekly restock for stall #12\",\n  \"items\": [\n    {\n      \"inventory_item_id\": \"{{inventory_id}}\",\n      \"quantity_kg\": 25\n    }\n  ]\n}"
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"const data = pm.response.json();",
+									"if (data.id) { pm.collectionVariables.set('order_id', data.id); }"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Show Order",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{base_url}}/orders/{{order_id}}"
+					}
+				},
+				{
+					"name": "Mark Order Fulfilled",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{base_url}}/orders/{{order_id}}",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"fulfilled\"\n}"
+						}
+					}
+				},
+				{
+					"name": "Cancel Order",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{base_url}}/orders/{{order_id}}",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"cancelled\"\n}"
+						}
+					}
+				},
+				{
+					"name": "Delete Pending Order",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{base_url}}/orders/{{order_id}}"
+					}
+				},
+				{
+					"name": "Get Order Receipt (struk)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{base_url}}/orders/{{order_id}}/receipt"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"// Response includes `print_url` -- open it in a browser tab",
+									"// (it's a signed URL, valid 30 minutes) and click Print.",
+									"const data = pm.response.json();",
+									"if (data.print_url) { console.log('Printable receipt:', data.print_url); }"
+								]
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Compliance",
+			"item": [
+				{
+					"name": "List Certificates",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{base_url}}/compliance?status=expiring_soon"
+					}
+				},
+				{
+					"name": "Create Certificate",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{base_url}}/compliance",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"vessel_id\": \"{{vessel_id}}\",\n  \"certificate_type\": \"health_inspection\",\n  \"certificate_number\": \"CERT-2026-0099\",\n  \"issuing_authority\": \"Port Health Authority\",\n  \"issued_at\": \"2026-01-15\",\n  \"expires_at\": \"2027-01-15\"\n}"
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"const data = pm.response.json();",
+									"if (data.id) { pm.collectionVariables.set('certificate_id', data.id); }"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Show Certificate",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{base_url}}/compliance/{{certificate_id}}"
+					}
+				},
+				{
+					"name": "Update Certificate",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{base_url}}/compliance/{{certificate_id}}",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"expires_at\": \"2027-06-15\"\n}"
+						}
+					}
+				},
+				{
+					"name": "Delete Certificate",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{base_url}}/compliance/{{certificate_id}}"
+					}
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,405 @@
+/* ---------------------------------------------------------------------
+   Harborline Provisions -- design tokens
+   A working ship's manifest, not a marketing page: legible tables and
+   forms first, with just enough maritime character in the frame around
+   them (wordmark, sidebar, stamped status marks) to feel like *this*
+   product rather than a generic admin template.
+   --------------------------------------------------------------------- */
+:root {
+  --ink: #14302c;
+  --ink-soft: #3f5854;
+  --teal: #0e6b62;
+  --teal-deep: #0a4a44;
+  --cream: #f2ead2;
+  --cream-high: #faf6e8;
+  --sand: #d9c99a;
+  --sand-line: #cbb989;
+  --acid: #c3d94a;
+  --red: #9c3b2e;
+
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background: var(--cream);
+  color: var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+/* ---------- Auth screens ---------- */
+
+.auth-shell {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--teal-deep);
+  background-image:
+    radial-gradient(circle at 15% 20%, rgba(195, 217, 74, 0.10), transparent 40%),
+    linear-gradient(180deg, var(--teal) 0%, var(--teal-deep) 70%);
+  padding: 32px 16px;
+}
+
+.auth-card {
+  background: var(--cream-high);
+  padding: 40px 36px 32px;
+  border-radius: 3px;
+  width: 380px;
+  max-width: 100%;
+  border: 1px solid var(--sand-line);
+  box-shadow: 0 24px 60px rgba(6, 26, 24, 0.35);
+}
+
+.auth-wordmark {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 1.6rem;
+  color: var(--teal-deep);
+  letter-spacing: 0.01em;
+  margin-bottom: 4px;
+}
+
+.auth-wave {
+  width: 64px;
+  height: 10px;
+  margin-bottom: 20px;
+  opacity: 0.7;
+}
+
+.auth-card h1 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.5rem;
+  margin: 0 0 4px;
+  color: var(--ink);
+}
+
+.auth-card p.subtitle {
+  color: var(--ink-soft);
+  margin-top: 0;
+  margin-bottom: 22px;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+label {
+  display: block;
+  font-size: 0.82rem;
+  margin-bottom: 5px;
+  margin-top: 14px;
+  color: var(--ink-soft);
+  font-weight: 500;
+}
+
+input, select {
+  width: 100%;
+  padding: 10px 11px;
+  border: 1px solid var(--sand-line);
+  border-radius: 3px;
+  font-size: 0.95rem;
+  font-family: var(--font-body);
+  background: #fff;
+  color: var(--ink);
+}
+
+input:focus, select:focus, button:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 1px;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 3px;
+  font-weight: 600;
+  font-family: var(--font-body);
+}
+
+button.primary {
+  background: var(--teal-deep);
+  color: var(--cream-high);
+  padding: 11px 18px;
+  width: 100%;
+  margin-top: 20px;
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+}
+
+button.primary:hover:not(:disabled) { background: var(--ink); }
+
+button.primary:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+button.secondary {
+  background: transparent;
+  color: var(--teal-deep);
+  padding: 7px 14px;
+  border: 1px solid var(--teal-deep);
+}
+
+button.secondary:hover { background: rgba(14, 107, 98, 0.08); }
+
+button.link {
+  background: none;
+  color: var(--teal-deep);
+  text-decoration: underline;
+  padding: 0;
+  font-weight: 500;
+}
+
+.error-box {
+  background: #f7e9e6;
+  color: var(--red);
+  border: 1px solid #e0bcb4;
+  padding: 9px 11px;
+  border-radius: 3px;
+  font-size: 0.85rem;
+  margin-top: 14px;
+}
+
+.hint-box {
+  background: rgba(14, 107, 98, 0.08);
+  color: var(--teal-deep);
+  border: 1px solid rgba(14, 107, 98, 0.18);
+  padding: 10px 12px;
+  border-radius: 3px;
+  font-size: 0.8rem;
+  margin-top: 16px;
+  line-height: 1.5;
+}
+
+.hint-box code {
+  background: rgba(14, 107, 98, 0.12);
+  padding: 1px 5px;
+  border-radius: 2px;
+}
+
+.switch-link {
+  text-align: center;
+  margin-top: 18px;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+/* ---------- App shell ---------- */
+
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 220px;
+  background: var(--teal-deep);
+  color: var(--cream);
+  padding: 22px 0 20px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar .brand {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 1.2rem;
+  padding: 0 22px 18px;
+  border-bottom: 1px solid rgba(242, 234, 210, 0.18);
+  margin-bottom: 6px;
+  color: var(--cream-high);
+}
+
+.sidebar nav { flex: 1; }
+
+.sidebar nav a {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 22px;
+  color: rgba(242, 234, 210, 0.72);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 500;
+  border-left: 3px solid transparent;
+}
+
+.sidebar nav a::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0;
+}
+
+.sidebar nav a.active {
+  background: rgba(242, 234, 210, 0.08);
+  color: var(--cream-high);
+  border-left-color: var(--acid);
+}
+
+.sidebar nav a.active::before { opacity: 0.9; }
+
+.sidebar nav a:hover:not(.active) { color: var(--cream-high); }
+
+.sidebar .user-box {
+  padding: 16px 22px 0;
+  font-size: 0.8rem;
+  color: rgba(242, 234, 210, 0.65);
+  border-top: 1px solid rgba(242, 234, 210, 0.18);
+  margin-top: 10px;
+}
+
+.sidebar .user-box > div:first-child {
+  color: var(--cream-high);
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.sidebar .user-box button {
+  margin-top: 12px;
+  width: 100%;
+  background: transparent;
+  color: var(--cream);
+  border: 1px solid rgba(242, 234, 210, 0.35);
+  padding: 7px 12px;
+  font-size: 0.8rem;
+}
+
+.sidebar .user-box button:hover { background: rgba(242, 234, 210, 0.1); }
+
+.main-content {
+  flex: 1;
+  padding: 30px 36px 40px;
+  overflow-x: auto;
+}
+
+.main-content h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0 0 18px;
+  font-size: 1.5rem;
+}
+
+.toolbar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--cream-high);
+  border: 1px solid var(--sand-line);
+}
+
+th, td {
+  text-align: left;
+  padding: 11px 13px;
+  font-size: 0.86rem;
+  border-bottom: 1px solid var(--sand);
+}
+
+th {
+  background: var(--teal-deep);
+  color: var(--cream-high);
+  font-weight: 600;
+  font-size: 0.78rem;
+}
+
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(14, 107, 98, 0.04); }
+
+/* Status marks -- styled as a stamped notation rather than a soft pill,
+   so it reads as a manifest annotation rather than generic SaaS chrome. */
+.badge {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 2px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid currentColor;
+  background: transparent;
+}
+
+.badge.green { color: #2f6e3d; }
+.badge.yellow { color: #8a6a12; }
+.badge.red { color: var(--red); }
+.badge.gray { color: var(--ink-soft); }
+
+.card {
+  background: var(--cream-high);
+  border: 1px solid var(--sand-line);
+  border-radius: 3px;
+  padding: 18px 20px;
+  margin-bottom: 18px;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 26, 24, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 16px;
+}
+
+.modal {
+  background: var(--cream-high);
+  border: 1px solid var(--sand-line);
+  border-radius: 3px;
+  padding: 26px 26px 22px;
+  width: 440px;
+  max-width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.modal h3 {
+  margin: 0 0 4px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: var(--ink);
+}
+
+.order-line {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.order-line select { flex: 2; }
+.order-line input { flex: 1; }
+
+.empty-state {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  padding: 22px 0;
+  text-align: center;
+}
+
+.loading-state {
+  padding: 44px;
+  text-align: center;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
